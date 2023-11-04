@@ -12,12 +12,24 @@
         <li><a href="/about">About</a></li>
         <li><a href="/contact">Contact</a></li>
         <li><a href="/product/6">Product</a></li>
-    <ul>
-        <h1>THIS IS CONTACT PAGE</h1>
-        <% contacts.forEach(contact => { %>
+
+        <h1>
+        <center> DAFTAR CONTACT</center>
+    </h1>
+        <br />
+
+    <% if (isEmpty) { %>
+        
+        <center><h1> Data Contact Tidak Tersedia!!!</center></h1>  
+        
+        <% } else { %>
+        <ul>
+            <% contacts.forEach(contact => { %>
             <li>Nama: <%= contact.nama %></li>
-            <p>NoHp: <%= contact.hp %></p>
-            <% }); %>   
-    </ul>
-</body>
-</html>
+            <li>Nomor HP: <%= contact.hp %></li>
+            <br />
+            <% }); %>
+        </ul>
+        <% } %>
+        </body>
+    </html>
