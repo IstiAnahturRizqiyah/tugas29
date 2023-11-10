@@ -1,20 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE-edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= title %> </title>
-</head>
-<body>
-    <h3>Links</h3>
-    <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/about">About</a></li>
-        <li><a href="/contact">Contact</a></li>
-    </ul>
-    <%# const nama = "Isti Anahtur Rizqiyah"; %>
-    <h1>Web Server Node JS</h1>
-    <p>Welcome to my page <%= nama %></p>
-</body>
-</html>
+<%- include('layout/header') %>
+<%- include('layout/nav') %>
+<h1> Welcome to Profile </h1>
+<h2><p> Kalo kamu nyerah terhadap program mu yang error lantas untuk apa kamu memulainya?</h2></p>
+<%- include('Layout/footer') %>
