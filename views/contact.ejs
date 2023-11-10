@@ -1,20 +1,16 @@
-<%- include('layout/nav.ejs') %>
-    <%- include('layout/header.ejs') %>
-    <br />
-    <h1>
-        Daftar Kontak
-    </h1>
-    <br />
+<h1 align ="center" class="container mx-auto px-4 lg:max-w-7xl py-24 text-center">        
+    Daftar Nama dan Kontak
+</h1>
     <% if (isEmpty) { %>
-        Data Contact Tidak Tersedia!!
-    </h3>
+<h2 align= "center" class="container mx-auto px-4 lg:max-w-7xl py-24 text-center" >
+    <font color="red"> Kontak Kosong!!</font>
+</h2>
     <% } else { %>
-    <ul>
-        <% contacts.forEach(contact => { %>
-        <li>Nama: <%= contact.nama %></li>
-        <li>Nomor HP: <%= contact.hp %></li>
-        <br />
-        <% }); %>
-    </ul>
+<ul>
+    <% contacts.forEach(contact => { %>
+    <li><h2>Nama: <%= contact.nama %></h2></li>
+    <li><h2>Nomor HP: <%= contact.hp %></h2></li>
+    <br />
+    <% }); %>
+</ul>
     <% } %>
-    <%- include('layout/footer.ejs') %>
