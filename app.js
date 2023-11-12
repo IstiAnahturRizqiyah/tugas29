@@ -4,7 +4,7 @@ const app = express();
 const port = 3000;
 const fs = require('fs');
 const expressLayouts = require('express-ejs-layouts');
-const { loadcontact } = require('./utility/contacts.js');
+const { loadcontact, searchcontact } = require('./utility/contacts.js');
 //const contacts = require(`./contacts.json`);
 
 //information using EJS
@@ -61,15 +61,26 @@ app.get('/contact', (req, res) => {
     res.render('contact', {
       contacts,
       isEmpty: true, // Variabel untuk menunjukan bahwa tidak tersedia
-      layout: 'layout/main-layout',
+      layout: 'layout/main-layout.ejs',
     });
   } else {
     res.render('contact', {
       contacts,
       isEmpty: false, // Vaiabel untuk menunjukan bahwa tidak tersedia
-      layout: 'layout/main-layout',
+      layout: 'layout/main-layout.ejs',
     });
   }
+});
+
+app.get('/contact/:nama', (req, res) => {
+  const contact = searchcontact(req.params.nama);
+
+  res.render('detail', {
+    title: 'Detail Contact',
+    contact,
+    isEmpty: true, // Variabel flag untuk menunjukkan bahwa objek kosong
+    layout: 'layout/main-layout.ejs', // Ejs core layout
+  });
 });
 
 app.get('/product/:id', (req, res) => {

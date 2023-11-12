@@ -10,6 +10,7 @@
             <th scope="col">Nama</th>
             <th scope="col">No.Telepon</th>
             <th scope="col">Email</th>
+            <th scope="col">Action</th>
           </tr>
         </thead>
         <tbody>
@@ -25,6 +26,9 @@
             <td><%= contact.nama %></td>
             <td><%= contact.hp %></td>
             <td><%= contact.email %></td>
+            <td>
+              <a href="/contact/<%= contact.nama %>" class="btn btn-success badge rounded-pill"><i class="bi bil-info-circle"></i>detail</a>
+            </td>
           </tr>
           <% }); %> <% } %>
         </tbody>

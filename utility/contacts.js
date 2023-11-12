@@ -20,4 +20,11 @@ const loadcontact = () => {
   return contacts;
 };
 
-module.exports = { loadcontact };
+// Cari contact
+const searchcontact = (nama) => {
+  const contacts = loadcontact();
+  const contact = contacts.find((contact) => contact.nama.toLowerCase() === nama.toLowerCase());
+  return contact;
+};
+
+module.exports = { loadcontact, searchcontact };
