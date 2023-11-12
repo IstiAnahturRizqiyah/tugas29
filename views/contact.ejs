@@ -1,16 +1,34 @@
-<h1 align ="center" class="container mx-auto px-4 lg:max-w-7xl py-24 text-center">        
-    Daftar Nama dan Kontak
-</h1>
-    <% if (isEmpty) { %>
-<h2 align= "center" class="container mx-auto px-4 lg:max-w-7xl py-24 text-center" >
-    <font color="purple"> Kontak Kosong!!</font>
-</h2>
-    <% } else { %>
-<ul>
-    <% contacts.forEach(contact => { %>
-    <li><h2>Nama: <%= contact.nama %></h2></li>
-    <li><h2>Nomor HP: <%= contact.hp %></h2></li>
-    <br />
-    <% }); %>
-</ul>
-    <% } %>
+<div class="container text-center">
+  <h1>Data Daftar Kontak</h1>
+  <br />
+  <div class="row">
+    <div class="col-md-8 mx-auto">
+      <table class="table table-striped table-hover">
+        <thead>
+          <tr>
+            <th scope="col">No</th>
+            <th scope="col">Nama</th>
+            <th scope="col">No.Telepon</th>
+            <th scope="col">Email</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Untuk mengecek data, apakah data daftar kontak kosong di EJS -->
+          <% if (isEmpty) { %>
+          <!-- Jika data daftar kontak kosong, tampilkan pesan "Contact Tidak Tersedia!!" -->
+          <h3 class="container">Contact Tidak Tersedia!!</h3>
+          <% } else { %>
+          <!-- Iterasi melalui daftar kontak menggunakan forEach -->
+          <% contacts.forEach((contact, i) => { i++ %>
+          <tr>
+            <th scope="row"><%= i++ %></th>
+            <td><%= contact.nama %></td>
+            <td><%= contact.hp %></td>
+            <td><%= contact.email %></td>
+          </tr>
+          <% }); %> <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
