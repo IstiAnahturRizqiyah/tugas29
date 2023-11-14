@@ -1,6 +1,5 @@
 <div class="container text-center">
   <h1>Data Daftar Kontak</h1>
-  <br />
   <div class="row">
     <div class="col-md-8 mx-auto">
       <table class="table table-striped table-hover">
@@ -17,7 +16,7 @@
           <!-- Untuk mengecek data, apakah data daftar kontak kosong di EJS -->
           <% if (isEmpty) { %>
           <!-- Jika data daftar kontak kosong, tampilkan pesan "Contact Tidak Tersedia!!" -->
-          <h3 class="container">Contact Tidak Tersedia!!</h3>
+          <h3 class="container">Kontak Data Kosong!</h3>
           <% } else { %>
           <!-- Iterasi melalui daftar kontak menggunakan forEach -->
           <% contacts.forEach((contact, i) => { i++ %>
@@ -27,12 +26,13 @@
             <td><%= contact.hp %></td>
             <td><%= contact.email %></td>
             <td>
-              <a href="/contact/<%= contact.nama %>" class="btn btn-success badge rounded-pill"><i class="bi bil-info-circle"></i>detail</a>
+              <a href="/contact/<%= contact.nama %>" class="btn btn-primary badge rounded-pill"><i class="bi bil-info-circle"></i>detail</a>
             </td>
           </tr>
           <% }); %> <% } %>
         </tbody>
       </table>
+      <a href="/contact/add" class="btn btn-primary">Tambah Data</a>
     </div>
   </div>
 </div>

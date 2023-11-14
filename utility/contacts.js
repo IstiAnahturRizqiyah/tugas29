@@ -26,5 +26,15 @@ const searchcontact = (nama) => {
   const contact = contacts.find((contact) => contact.nama.toLowerCase() === nama.toLowerCase());
   return contact;
 };
+const savecontacts = (contacts) => {
+  fs.writeFileSync('data/contacts.json', JSON.stringify(contacts));
+};
 
-module.exports = { loadcontact, searchcontact };
+//,menambah data baru pda contact json
+const addcontact = (contact) => {
+  const contacts = loadcontact();
+  contacts.push(contact);
+  savecontacts(contacts);
+};
+
+module.exports = { loadcontact, searchcontact, addcontact };

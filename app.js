@@ -4,7 +4,7 @@ const app = express();
 const port = 3000;
 const fs = require('fs');
 const expressLayouts = require('express-ejs-layouts');
-const { loadcontact, searchcontact } = require('./utility/contacts.js');
+const { loadcontact, searchcontact, addcontact } = require('./utility/contacts.js');
 //const contacts = require(`./contacts.json`);
 
 //information using EJS
@@ -14,7 +14,8 @@ app.set('view engine', 'ejs');
 app.use(expressLayouts);
 
 // Menyajikan konten statis dari folder 'images'
-app.use(express.static(path.join(__dirname, 'views')));
+app.use(express.static('public'));
+app.use(express.urlencoded());
 
 // Tentukan direktori views
 app.set('views', __dirname + '/views');
@@ -34,27 +35,6 @@ app.get('/about', (req, res) => {
 
 app.get('/contact', (req, res) => {
   const contacts = loadcontact();
-  // Mengirimkan halaman "contact.html"
-  //res.sendFile("./contact.html", { root: __dirname });
-  // Route untuk halaman Contact
-
-  // Baca data kontak dari file JSON
-  //fs.readFile('contacts.json', (err, data) => {
-  //if (err) {
-  //console.error(err);
-  //return res.status(500).send('Terjadi kesalahan');
-  //}
-  //const contacts = JSON.parse(data);
-  // Render halaman Contact dengan data kontak
-  //res.render('contact', { contacts });
-  // });
-  //});
-
-  //const contacts = [
-  //{ nama: 'Isti', hp: '089786567823' },
-  //{ nama: 'Anahtur', hp: '085678909876' },
-  //{ nama: 'Rizqiyah', hp: '087678906543' },
-  //];
 
   if (contacts.length === 0) {
     // Menampilkan Data yang Tidak Tersedia
@@ -72,6 +52,20 @@ app.get('/contact', (req, res) => {
   }
 });
 
+//add new contact form
+app.get('/contact/add', (req, res) => {
+  res.render('add-contact', {
+    title: 'Add New Data Form',
+    layout: 'layout/main-layout.ejs',
+  });
+});
+
+//add contact proses
+app.post('/contact', (req, res) => {
+  addcontact(req.body);
+  res.redirect('/contact');
+});
+
 app.get('/contact/:nama', (req, res) => {
   const contact = searchcontact(req.params.nama);
 
@@ -81,11 +75,6 @@ app.get('/contact/:nama', (req, res) => {
     isEmpty: true, // Variabel flag untuk menunjukkan bahwa objek kosong
     layout: 'layout/main-layout.ejs', // Ejs core layout
   });
-});
-
-app.get('/product/:id', (req, res) => {
-  // Lakukan sesuatu dengan productId dan category, misalnya mencari produk berdasarkan ID dan kategori.
-  res.send('product : ' + req.params.id + ' kategori  : ' + req.query.kategori);
 });
 
 app.use('/', (req, res) => {
