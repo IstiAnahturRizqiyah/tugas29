@@ -13,7 +13,7 @@ if (!fs.existsSync(filePath)) {
 }
 
 //load contacts
-const loadcontact = () => {
+const loadContact = () => {
   //Membaca file JSON
   const file = fs.readFileSync(filePath, 'utf8');
   const contacts = JSON.parse(file);
@@ -21,20 +21,26 @@ const loadcontact = () => {
 };
 
 // Cari contact
-const searchcontact = (nama) => {
-  const contacts = loadcontact();
+const searchContact = (nama) => {
+  const contacts = loadContact();
   const contact = contacts.find((contact) => contact.nama.toLowerCase() === nama.toLowerCase());
   return contact;
 };
-const savecontacts = (contacts) => {
+const saveContacts = (contacts) => {
   fs.writeFileSync('data/contacts.json', JSON.stringify(contacts));
 };
 
-//,menambah data baru pda contact json
-const addcontact = (contact) => {
-  const contacts = loadcontact();
+//menambah data baru pda contact json
+const addContact = (contact) => {
+  const contacts = loadContact();
   contacts.push(contact);
-  savecontacts(contacts);
+  saveContacts(contacts);
 };
 
-module.exports = { loadcontact, searchcontact, addcontact };
+//Chek Duplikat
+const chekDuplikat = (nama) => {
+  const contacts = loadContact();
+  return contacts.find((contact) => contact.nama === nama);
+};
+
+module.exports = { loadContact, searchContact, addContact, chekDuplikat };
