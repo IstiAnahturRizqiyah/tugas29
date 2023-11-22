@@ -8,6 +8,10 @@
           <h5 class="card-title"><%= contact.nama %></h5>
           <h6 class="card-subtitle mb-2 text-muted"><%= contact.mobile %></h6>
           <h6 class="card-subtitle mb-2 text-muted"><%= contact.email %></h6>
+          <div>
+          <a href="/contact/update/<%= contact.nama %>" class="btn btn-warning badge rounded-pill";">Edit</a>
+          <a href="/contact/delete/<%= contact.nama %>" class="btn btn-danger badge rounded-pill" onclick="return confirm('Apakah Anda yakin ingin menghapus?');">Hapus</a>
+          </div>
           <a href="/contact" class="card-link">&laquo; Back to contact page</a>
         </div>
       </div>

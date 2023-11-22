@@ -8,7 +8,7 @@
             <th scope="col">No</th>
             <th scope="col">Nama</th>
             <th scope="col">No.Telepon</th>
-            <th scope="col">Email</th>
+            <!--th scope="col">Email</th-->
             <th scope="col">Action</th>
           </tr>
         </thead>
@@ -19,14 +19,16 @@
           <h3 class="container">Kontak Data Kosong!</h3>
           <% } else { %>
           <!-- Iterasi melalui daftar kontak menggunakan forEach -->
-          <% contacts.forEach((contact, i) => { i++ %>
+          <% contacts.forEach((contact, index) => { index++ %>
           <tr>
-            <th scope="row"><%= i++ %></th>
+            <th scope="row"><%= index++ %></th>
             <td><%= contact.nama %></td>
             <td><%= contact.hp %></td>
-            <td><%= contact.email %></td>
+            <!--td><%= contact.email %></td-->
             <td>
-              <a href="/contact/<%= contact.nama %>" class="btn btn-primary badge rounded-pill"><i class="bi bil-info-circle"></i>detail</a>
+              <a href="/contact/update/<%= contact.nama %>" class="btn btn-warning badge rounded-pill";">Edit</a>
+              <a href="/contact/<%= contact.nama %>" class="btn btn-primary badge rounded-pill"><i class="bi bi-info-circle"></i> Detail</a>
+              <a href="/contact/delete/<%= contact.nama %>" class="btn btn-danger badge rounded-pill" onclick="return confirm('Apakah Anda yakin ingin menghapus?');">Hapus</a>
             </td>
           </tr>
           <% }); %> <% } %>

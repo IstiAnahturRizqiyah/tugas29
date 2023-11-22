@@ -26,6 +26,7 @@ const searchContact = (nama) => {
   const contact = contacts.find((contact) => contact.nama.toLowerCase() === nama.toLowerCase());
   return contact;
 };
+
 const saveContacts = (contacts) => {
   fs.writeFileSync('data/contacts.json', JSON.stringify(contacts));
 };
@@ -43,4 +44,21 @@ const chekDuplikat = (nama) => {
   return contacts.find((contact) => contact.nama === nama);
 };
 
-module.exports = { loadContact, searchContact, addContact, chekDuplikat };
+//hapus kontak
+const deleteContact = (nama) => {
+  const contacts = loadContact();
+  const filteredContacts = contacts.filter((contact) => contact.nama !== nama);
+  saveContacts(filteredContacts);
+};
+
+//ubah kontak
+const updateContacts = (newContact) => {
+  const contacts = loadContact();
+  //menghilangkan nama yang sama dengan data yang lama
+  const filteredContacts = contacts.filter((contact) => contact.nama !== newContact.oldNama);
+  delete newContact.oldNama;
+  filteredContacts.push(newContact);
+  saveContacts(filteredContacts);
+};
+
+module.exports = { loadContact, searchContact, addContact, chekDuplikat, deleteContact, updateContacts };
