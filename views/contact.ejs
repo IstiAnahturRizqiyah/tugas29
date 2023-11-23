@@ -13,11 +13,14 @@
           </tr>
         </thead>
         <tbody>
-          <!-- Untuk mengecek data, apakah data daftar kontak kosong di EJS -->
-          <% if (isEmpty) { %>
-          <!-- Jika data daftar kontak kosong, tampilkan pesan "Contact Tidak Tersedia!!" -->
-          <h3 class="container">Kontak Data Kosong!</h3>
-          <% } else { %>
+          <!-- menampilkan pesan message dari flash -->
+    <% if (msg.length !== 0) { %>
+      <div class="alert alert-success" role="alert"><%= msg %></div>
+      <% } %>
+      <!-- Kondisi jika data contact kosong, maka akan tampil pesan data tidak tersedia -->
+      <% if (contacts.length === 0) { %>
+      <div class="alert alert-warning" role="alert">Data tidak tersedia</div>
+      <% } %>
           <!-- Iterasi melalui daftar kontak menggunakan forEach -->
           <% contacts.forEach((contact, index) => { index++ %>
           <tr>
@@ -31,7 +34,7 @@
               <a href="/contact/delete/<%= contact.nama %>" class="btn btn-danger badge rounded-pill" onclick="return confirm('Apakah Anda yakin ingin menghapus?');">Hapus</a>
             </td>
           </tr>
-          <% }); %> <% } %>
+          <% }); %>
         </tbody>
       </table>
       <a href="/contact/add" class="btn btn-primary">Tambah Data</a>

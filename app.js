@@ -2,18 +2,19 @@ const express = require('express');
 const path = require('path');
 const app = express();
 //call database
-const pool = require('./db');
-app.use(express.json()); // => req.body
+const pool = require('./db.js');
 const port = 3000;
 const fs = require('fs');
 const expressLayouts = require('express-ejs-layouts');
-const { loadContact, searchContact, addContact, chekDuplikat, deleteContact, updateContacts } = require('./utility/contacts.js');
+const { getContact, loadContact, searchContact, addContact, chekDuplikat, deleteContact, updateContacts } = require('./utility/contacts.js');
 const { body, validationResult, check } = require('express-validator');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const flash = require('connect-flash');
 //const contacts = require(`./contacts.json`);
 
+// => req.body
+app.use(express.json());
 //information using EJS
 app.set('view engine', 'ejs');
 // Gunakan express-ejs-layouts middleware
@@ -21,6 +22,7 @@ app.use(expressLayouts);
 // Menyajikan konten statis dari folder 'images'
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
+app.use(flash());
 
 //konfigurasi flash
 app.use(cookieParser('secret'));
@@ -32,7 +34,6 @@ app.use(
     saveUninitialized: true,
   })
 );
-app.use(flash());
 
 // Tentukan direktori views
 app.set('views', __dirname + '/views');
@@ -50,26 +51,6 @@ app.get('/about', (req, res) => {
   // res.sendFile("./about.html", { root: __dirname });
   res.render('about', { layout: 'layout/main-layout' });
 });
-
-//halaman kontak
-app.get('/contact', (req, res) => {
-  const contacts = loadContact();
-  if (contacts.length === 0) {
-    // Menampilkan Data yang Tidak Tersedia
-    res.render('contact', {
-      contacts,
-      isEmpty: true, // Variabel untuk menunjukan bahwa tidak tersedia
-      layout: 'layout/main-layout.ejs',
-    });
-  } else {
-    res.render('contact', {
-      contacts,
-      isEmpty: false, // Vaiabel untuk menunjukan bahwa tidak tersedia
-      layout: 'layout/main-layout.ejs',
-    });
-  }
-});
-
 //add new contact form
 app.get('/contact/add', (req, res) => {
   res.render('add-contact', {
@@ -165,8 +146,10 @@ app.post(
 );
 
 //detail contact
-app.get('/contact/:nama', (req, res) => {
-  const contact = searchContact(req.params.nama);
+app.get('/contact/:nama', async (req, res) => {
+  const nama = req.params.nama;
+  const contacts = await getContact();
+  const contact = contacts.find((contact) => contact.nama === nama);
   res.render('detail', {
     title: 'Detail Contact',
     contact,
@@ -178,9 +161,9 @@ app.get('/contact/:nama', (req, res) => {
 //insert data to database
 app.get('/addasync', async (req, res) => {
   try {
-    const nama = 'rizqiyah';
-    const hp = '089765678908';
-    const email = 'rzqyh@gmail.com';
+    const nama = '';
+    const hp = '';
+    const email = '';
     const newCont = await pool.query(`INSERT INTO contacts VALUES('${nama}', '${hp}', '${email}') RETURNING *`);
     res.json(newCont);
   } catch (err) {
@@ -194,6 +177,27 @@ app.get('/list', async (req, res) => {
     res.json(contact.rows);
   } catch (err) {
     console.error(err.message);
+  }
+});
+
+// halaman kontak
+app.get('/contact', async (req, res) => {
+  try {
+    const contactList = await pool.query(`SELECT * FROM contacts`);
+    const contacts = contactList.rows;
+    // Menampilkan Data yang Tidak Tersedia
+    res.render('contact', {
+      contacts,
+      layout: 'layout/main-layout.ejs',
+      msg: req.flash('msg'),
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.render('contact', {
+      contacts: [],
+      layout: 'layout/main-layout.ejs',
+      msg: req.flash('msg'),
+    });
   }
 });
 
