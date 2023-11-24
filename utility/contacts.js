@@ -31,44 +31,53 @@ const loadContact = () => {
 };
 
 // Cari contact
-const searchContact = (nama) => {
-  const contacts = getContact();
+const searchContact = async (nama) => {
+  const contacts = await getContact();
   const contact = contacts.find((contact) => contact.nama.toLowerCase() === nama.toLowerCase());
   return contact;
 };
 
-const saveContacts = (contacts) => {
-  fs.writeFileSync('data/contacts.json', JSON.stringify(contacts));
-};
+//const saveContacts = (contacts) => {
+//fs.writeFileSync('data/contacts.json', JSON.stringify(contacts));
+//};
 
 //menambah data baru pda contact json
-const addContact = (contact) => {
-  const contacts = getContact();
-  contacts.push(contact);
-  saveContacts(contacts);
+const addContact = async (contact) => {
+  const { nama, hp, email } = contact;
+  const connection = await pool.connect();
+  const query = `INSERT INTO contacts (nama, hp, email) VALUES ($1, $2, $3) `;
+  await connection.query(query, [nama, hp, email]);
+  //const contacts = getContact();
+  //contacts.push(contact);
+  //saveContacts(contacts);
 };
 
 //Chek Duplikat
-const chekDuplikat = (nama) => {
-  const contacts = getContact();
+const chekDuplikat = async (nama) => {
+  const contacts = await getContact();
   return contacts.find((contact) => contact.nama === nama);
 };
 
 //hapus kontak
-const deleteContact = (nama) => {
-  const contacts = getContact();
-  const filteredContacts = contacts.filter((contact) => contact.nama !== nama);
-  saveContacts(filteredContacts);
+const deleteContact = async (nama) => {
+  const connection = await pool.connect();
+  const query = `DELETE FROM contacts WHERE nama = $1 `;
+  await connection.query(query, [nama]);
+  //const contacts = getContact();
+  //const filteredContacts = contacts.filter((contact) => contact.nama !== nama);
+  //saveContacts(filteredContacts);
 };
 
 //ubah kontak
-const updateContacts = (newContact) => {
-  const contacts = getContact();
+const updateContacts = async (newContact) => {
+  const connection = await pool.connect();
+  const query = ` UPDATE contacts SET nama = $1, hp = $2, email=$3 WHERE nama = $4 `;
+  await connection.query(query, [newContact.nama, newContact.hp, newContact.email, newContact.oldNama]);
   //menghilangkan nama yang sama dengan data yang lama
-  const filteredContacts = contacts.filter((contact) => contact.nama !== newContact.oldNama);
-  delete newContact.oldNama;
-  filteredContacts.push(newContact);
-  saveContacts(filteredContacts);
+  //const filteredContacts = contacts.filter((contact) => contact.nama !== newContact.oldNama);
+  //delete newContact.oldNama;
+  //filteredContacts.push(newContact);
+  //saveContacts(filteredContacts);
 };
 
 module.exports = { getContact, loadContact, searchContact, addContact, chekDuplikat, deleteContact, updateContacts };

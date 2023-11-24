@@ -4,6 +4,7 @@ const app = express();
 //call database
 const pool = require('./db.js');
 const port = 3000;
+const host = 'localhost';
 const fs = require('fs');
 const expressLayouts = require('express-ejs-layouts');
 const { getContact, loadContact, searchContact, addContact, chekDuplikat, deleteContact, updateContacts } = require('./utility/contacts.js');
@@ -64,8 +65,8 @@ app.get('/contact/add', (req, res) => {
 app.post(
   '/contact',
   [
-    body('nama').custom((value) => {
-      const duplikat = chekDuplikat(value);
+    body('nama').custom(async (value) => {
+      const duplikat = await chekDuplikat(value);
       if (duplikat) {
         throw new Error('Maaf data sudah ada!');
       }
@@ -74,7 +75,7 @@ app.post(
     check('email', 'Email Tidak Valid!').isEmail(), //email cek
     check('hp', 'Nomor Telepon Tidak Valid!').isMobilePhone('id-ID'),
   ],
-  (req, res) => {
+  async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       res.render('add-contact', {
@@ -83,52 +84,65 @@ app.post(
         errors: errors.array(),
       });
     } else {
-      addContact(req.body);
-      req.flash('msg', 'Data Contact Berhasil Ditambahkan!');
-      res.redirect('/contact');
+      try {
+        await addContact(req.body);
+        req.flash('msg', 'Data Contact Berhasil Ditambahkan!');
+        res.redirect('/contact');
+      } catch (err) {
+        console.error(err.message);
+      }
     }
   }
 );
 
 //hapus kontak
-app.get('/contact/delete/:nama', (req, res) => {
-  const contact = loadContact(req.params.nama);
-  if (!contact) {
-    res.status(404);
-    res.send('Data Tidak Ada');
-  } else {
-    deleteContact(req.params.nama);
-    req.flash('msg', 'Data Contact Deleted!');
-    res.redirect('/contact');
+app.get('/contact/delete/:nama', async (req, res) => {
+  try {
+    const contact = await loadContact(req.params.nama);
+    if (!contact) {
+      res.status(404);
+      res.send('Data Tidak Ada');
+    } else {
+      await deleteContact(req.params.nama);
+      req.flash('msg', 'Data Berhasil di Hapus!!');
+      res.redirect('/contact');
+    }
+  } catch (err) {
+    console.error(err.message);
+    res.status(300).send;
   }
 });
 
 //mengubah data
-app.get('/contact/update/:nama', (req, res) => {
-  const contact = searchContact(req.params.nama);
-
-  res.render('edit-contact', {
-    tittle: 'Form Update Data Contact',
-    layout: 'layout/main-layout',
-    contact,
-  });
+app.get('/contact/update/:nama', async (req, res) => {
+  try {
+    const contact = await searchContact(req.params.nama);
+    res.render('edit-contact', {
+      tittle: 'Form Update Data Contact',
+      layout: 'layout/main-layout',
+      contact,
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(300).send;
+  }
 });
 
 //ubah kontak
 app.post(
   '/contact/update',
   [
-    body('nama').custom((value, { req }) => {
-      const duplikat = chekDuplikat(value);
+    body('nama').custom(async (value, { req }) => {
+      const duplikat = await chekDuplikat(value);
       if (value !== req.body.oldNama && duplikat) {
-        throw new Error('Nama sudah di gunakan');
+        throw new Error('Nama sudah di gunakan!');
       }
       return true;
     }),
     check('email', 'Email Tidak Valid').isEmail(),
     check('hp', 'Nomor Telepon Tidak Valid').isMobilePhone('id-ID'),
   ],
-  (req, res) => {
+  async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       res.render('edit-contact', {
@@ -138,9 +152,14 @@ app.post(
         contact: req.body,
       });
     } else {
-      updateContacts(req.body);
-      req.flash('msg', 'Data Contact Berhasil Diubah!');
-      res.redirect('/contact');
+      try {
+        await updateContacts(req.body);
+        req.flash('msg', 'Data Contact Berhasil Diubah!');
+        res.redirect('/contact');
+      } catch (err) {
+        console.error(err.message);
+        res.status(300).send;
+      }
     }
   }
 );
@@ -205,6 +224,6 @@ app.use('/', (req, res) => {
   res.status(404);
   res.send('page not found :  404');
 });
-app.listen(port, () => {
-  console.log(`Server berjalan di port 3000`);
+app.listen(port, host, () => {
+  console.log(`Server berjalan di http://${host}:${port}`);
 });
